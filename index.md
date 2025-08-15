@@ -22,6 +22,16 @@ Hi! My name is Anishka Sanghvi
 
 > Coding starts with tools, explore these tools and procedures with a click.
 
+<head>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+  integrity="sha512-pVJteCFe5nTgX4x0F/hqYQUF3jPMvUOdP+zFNH4Qq9I+eF4dKsk3O+PbqLo0mTfZfy5Dq2rE4O7qgW5HwBuhAA=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+</head>
+
 <a href="https://github.com/Open-Coding-Society/student">
     <img src="https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white" alt="GitHub">
 </a>
@@ -53,6 +63,15 @@ Hi! My name is Anishka Sanghvi
 </a>
 
 <br>
+
+<br>
+<body>
+  <h1>Cool Icons</h1>
+  <i class="fas fa-pencil"></i>
+  <i class="fas fa-rocket"></i>
+  <i class="fas fa-coffee"></i>
+  <i class="fas fa-music"></i>
+</body><br>
 
 <!-- Contact Section -->
 ### Get in Touch
