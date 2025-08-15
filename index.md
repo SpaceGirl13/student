@@ -6,7 +6,7 @@ hide: true
 
 ### Me and Team
 
-Hi! My name is Anishka Sanghvi...
+Hi! My name is Anishka Sanghvi 
 
 | Role         | Name     | Repo Location                       | Stream                | Repo Name |
 |--------------|----------|-------------------------------------|-----------------------|-----------|
@@ -33,6 +33,12 @@ Hi! My name is Anishka Sanghvi...
 </a>
 <a href="https://vscode.dev/" class="button small" style="background-color: #d38a4bff">
     <span style="color: #FFFFFF">VSCODE</span>
+</a>
+<a href="https://www.markdownguide.org/cheat-sheet/" class="button small" style="background-color: #4bd3d3ff">
+    <span style="color: #000000ff">Markdown Cheat Sheet</span>
+</a>
+<a href="https://quickref.me/html.html" class="button small" style="background-color: #e4546cff">
+    <span style="color: #000000ff">HTML Cheat Sheet</span>
 </a>
 
 <br>
