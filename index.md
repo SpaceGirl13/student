@@ -6,7 +6,7 @@ hide: true
 
 ### Me and Team
 
-Hi! My name is Anishka Sanghvi.
+Hi! My name is Anishka Sanghvi...
 
 | Role         | Name     | Repo Location                       | Stream                | Repo Name |
 |--------------|----------|-------------------------------------|-----------------------|-----------|
