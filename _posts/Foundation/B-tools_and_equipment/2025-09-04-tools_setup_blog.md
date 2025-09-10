@@ -1,7 +1,7 @@
 ---
 title: "My Journey Setting Up Tools for My LxD Project"
 date: 2025-09-09
-author: "Your Name"
+author: Anishka Sanghvi
 tags: ["tools", "setup", "vscode", "git", "learning-experience-design"]
 ---
 
