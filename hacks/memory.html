@@ -1,0 +1,233 @@
+---
+layout: default
+title: Memory Game
+permalink: /memory-game/
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Farm Memory Game</title>
+  <style>
+    /* General page styling */
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: url("{{ site.baseurl }}/images/farmbackground.jpg") no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    /* Timer at the top */
+    #timer {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: darkred;
+    }
+
+    /* Game board uses CSS grid: 4x4 */
+    #game-board {
+      display: grid;
+      grid-template-columns: repeat(4, 100px);
+      grid-gap: 12px;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    /* Each card is a "container" for front/back faces */
+    .card {
+      width: 100px;
+      height: 100px;
+      perspective: 600px; /* enables 3D flip effect */
+      cursor: pointer;
+    }
+
+    /* Inner wrapper for flipping */
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.4s;
+    }
+
+    /* Flip effect: rotate card when clicked */
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    /* Common styles for front/back faces */
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden; /* hides back when not visible */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      border-radius: 8px;
+    }
+
+    /* Front face (hidden state) */
+    .front {
+      background: #cccccc;
+    }
+
+    /* Back face (revealed emoji) */
+    .back {
+      background: #ffffff;
+      transform: rotateY(180deg);
+    }
+
+    /* Description panel at bottom */
+    p.description {
+      margin: 8px auto;
+      font-size: 16px;
+      color: #333;
+      max-width: 600px;
+      line-height: 1.4;
+      text-align: left;
+      background: rgba(255,255,255,0.8);
+      padding: 10px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Farm Memory Game</h1>
+  <div id="timer">Time Left: 60</div>
+  <div id="game-board"></div>
+
+  <script>
+    /* --- GAME VARIABLES --- */
+    const emojis = ["🦒","🐷","🐰","🐴","🐑","🐶","🐘","🦓"]; // animals
+    let deck = [...emojis, ...emojis]; // duplicate for pairs
+    let firstCard = null;
+    let secondCard = null;
+    let lockBoard = false; // prevents flipping more than 2 cards at once
+    let matches = 0;
+    let timeLeft = 60;
+    let timerId;
+
+    const board = document.getElementById("game-board");
+    const timerDisplay = document.getElementById("timer");
+
+    /* Fisher-Yates shuffle algorithm */
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    /* Create the game board dynamically */
+    function createBoard() {
+      board.innerHTML = ""; // clear any previous cards
+      shuffle(deck).forEach((emoji) => {
+        // Card container
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.dataset.emoji = emoji; // store emoji in dataset
+
+        // Inner wrapper for flip animation
+        const inner = document.createElement("div");
+        inner.classList.add("card-inner");
+
+        // Front (hidden state)
+        const front = document.createElement("div");
+        front.classList.add("card-face", "front");
+
+        // Back (emoji revealed)
+        const back = document.createElement("div");
+        back.classList.add("card-face", "back");
+        back.textContent = emoji;
+
+        // Build card structure
+        inner.appendChild(front);
+        inner.appendChild(back);
+        card.appendChild(inner);
+
+        // Add event listener to flip card
+        card.addEventListener("click", flipCard);
+        board.appendChild(card);
+      });
+    }
+
+    /* Handle card flip */
+    function flipCard() {
+      if (lockBoard || this === firstCard) return; // ignore invalid flips
+      this.classList.add("flipped");
+
+      if (!firstCard) {
+        firstCard = this; // store first selected card
+        return;
+      }
+
+      secondCard = this; // store second card
+      checkForMatch();
+    }
+
+    /* Check if two flipped cards match */
+    function checkForMatch() {
+      const isMatch = firstCard.dataset.emoji === secondCard.dataset.emoji;
+      if (isMatch) {
+        matches += 2;
+        resetTurn();
+        // Win condition
+        if (matches === deck.length) {
+          clearInterval(timerId);
+          setTimeout(() => alert("🎉 You matched all the animals!"), 300);
+        }
+      } else {
+        lockBoard = true;
+        // Flip back after short delay
+        setTimeout(() => {
+          firstCard.classList.remove("flipped");
+          secondCard.classList.remove("flipped");
+          resetTurn();
+        }, 800);
+      }
+    }
+
+    /* Reset card tracking after each turn */
+    function resetTurn() {
+      [firstCard, secondCard] = [null, null];
+      lockBoard = false;
+    }
+
+    /* Start 60-second countdown timer */
+    function startTimer() {
+      timeLeft = 60;
+      timerDisplay.textContent = "Time Left: " + timeLeft;
+      timerId = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = "Time Left: " + timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(timerId);
+          alert("⏰ Time's up! Game over.");
+        }
+      }, 1000);
+    }
+
+    /* Initialize game on page load */
+    createBoard();
+    startTimer();
+  </script>
+
+  <!-- Game description -->
+  <p class="description"><strong>About this game:</strong></p>
+  <p class="description">I customized this memory game by changing the emojis to Peppa Pig themed animals.</p>
+  <p class="description">Additionally, I customized this memory game by adding a farm-themed background.</p>
+  <p class="description">I also added a flip animation so tiles rotate instead of instantly switching.</p>
+  <p class="description">Finally, I included a 60-second countdown timer to add challenge.</p>
+</body>
+</html>
