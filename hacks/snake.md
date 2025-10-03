@@ -448,17 +448,3 @@ footer a {
     ele_high_score.innerText = highScore;
 })();
 </script>
-
-<footer>
-    <h3>Changes from the Original Snake Game</h3>
-    <ul style="list-style-type: none; padding: 0;">
-        <li>🎨 Background updated to a light purple color with white text for a modern look.</li>
-        <li>🍎 Food is now represented by random fruit emojis instead of plain blocks.</li>
-        <li>🐍 Snake segments are displayed as snake emojis rather than simple squares.</li>
-        <li>🏆 A <strong>High Score</strong> system has been added and is saved using local storage.</li>
-        <li>🖥️ Cleaner UI with centered layout and styled buttons/links.</li>
-        <li>✨ Glowing border effect around the game canvas.</li>
-        <li>🎮 Enhanced UI design for all game screens with gradients and glow effects.</li>
-        <li>⌨️ WASD controls added alongside arrow keys for movement.</li>
-    </ul>
-</footer>

@@ -3,7 +3,7 @@ title: "Welcome to Peppa Pig's Tic Tac Toe! 🐽"
 comments: false
 layout: default
 permalink: /tictactoe
-author: Akshara, Ruchika, Laya
+author: Anishka Sanghvi
 ---
 
 <style>
