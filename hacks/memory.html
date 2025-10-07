@@ -6,6 +6,7 @@ permalink: /memory-game/
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Farm Memory Game</title>
@@ -45,7 +46,8 @@ permalink: /memory-game/
     .card {
       width: 100px;
       height: 100px;
-      perspective: 600px; /* enables 3D flip effect */
+      perspective: 600px;
+      /* enables 3D flip effect */
       cursor: pointer;
     }
 
@@ -68,7 +70,8 @@ permalink: /memory-game/
       position: absolute;
       width: 100%;
       height: 100%;
-      backface-visibility: hidden; /* hides back when not visible */
+      backface-visibility: hidden;
+      /* hides back when not visible */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -95,12 +98,13 @@ permalink: /memory-game/
       max-width: 600px;
       line-height: 1.4;
       text-align: left;
-      background: rgba(255,255,255,0.8);
+      background: rgba(255, 255, 255, 0.8);
       padding: 10px;
       border-radius: 6px;
     }
   </style>
 </head>
+
 <body>
   <h1>Farm Memory Game</h1>
   <div id="timer">Time Left: 60</div>
@@ -108,7 +112,7 @@ permalink: /memory-game/
 
   <script>
     /* --- GAME VARIABLES --- */
-    const emojis = ["🦒","🐷","🐰","🐴","🐑","🐶","🐘","🦓"]; // animals
+    const emojis = ["🦒", "🐷", "🐰", "🐴", "🐑", "🐶", "🐘", "🦓"]; // animals
     let deck = [...emojis, ...emojis]; // duplicate for pairs
     let firstCard = null;
     let secondCard = null;
@@ -230,4 +234,5 @@ permalink: /memory-game/
   <p class="description">I also added a flip animation so tiles rotate instead of instantly switching.</p>
   <p class="description">Finally, I included a 60-second countdown timer to add challenge.</p>
 </body>
+
 </html>
