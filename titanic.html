@@ -1,0 +1,145 @@
+---
+layout: bootstrap
+title: Titanic Survival Predictor
+search_exclude: true
+description: Predict Titanic passenger survival using ML
+hide: true
+permalink: /titanic
+---
+
+<head>
+  <style>
+    body { background-color: #0d1117; color: #e6edf3; }
+    .container { background-color: #0d1117; }
+    h4 { color: #f0f6fc; }
+    .form-label { color: #8b949e; }
+    .form-select, .form-control {
+      background-color: #21262d;
+      color: #e6edf3;
+      border-color: #30363d;
+    }
+    .form-select:focus, .form-control:focus {
+      background-color: #21262d;
+      color: #e6edf3;
+      border-color: #58a6ff;
+      box-shadow: 0 0 0 0.25rem rgba(88, 166, 255, 0.25);
+    }
+    .form-select option { background-color: #21262d; color: #e6edf3; }
+    .btn-primary { background-color: #238636; border-color: #238636; }
+    .btn-primary:hover { background-color: #2ea043; border-color: #2ea043; }
+  </style>
+</head>
+
+<h4 class="mb-3">Titanic Survival Predictor</h4>
+
+<div class="row g-3" style="max-width: 520px;">
+
+  <div class="col-6">
+    <label class="form-label">Passenger Class</label>
+    <select id="pclass" class="form-select">
+      <option value="1">1st Class</option>
+      <option value="2" selected>2nd Class</option>
+      <option value="3">3rd Class</option>
+    </select>
+  </div>
+
+  <div class="col-6">
+    <label class="form-label">Sex</label>
+    <select id="sex" class="form-select">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+  </div>
+
+  <div class="col-6">
+    <label class="form-label">Age</label>
+    <input type="number" id="age" class="form-control" value="30" min="0" max="100" />
+  </div>
+
+  <div class="col-6">
+    <label class="form-label">Fare ($)</label>
+    <input type="number" id="fare" class="form-control" value="16" min="0" />
+  </div>
+
+  <div class="col-6">
+    <label class="form-label">Siblings / Spouses Aboard</label>
+    <select id="sibsp" class="form-select">
+      <option value="0" selected>0</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+  </div>
+
+  <div class="col-6">
+    <label class="form-label">Parents / Children Aboard</label>
+    <select id="parch" class="form-select">
+      <option value="0" selected>0</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+    </select>
+  </div>
+
+  <div class="col-6">
+    <label class="form-label">Port of Embarkation</label>
+    <select id="embarked" class="form-select">
+      <option value="S" selected>Southampton (S)</option>
+      <option value="C">Cherbourg (C)</option>
+      <option value="Q">Queenstown (Q)</option>
+    </select>
+  </div>
+
+  <div class="col-6">
+    <label class="form-label">Traveling Alone?</label>
+    <select id="alone" class="form-select">
+      <option value="false" selected>No</option>
+      <option value="true">Yes</option>
+    </select>
+  </div>
+
+  <div class="col-12">
+    <button class="btn btn-primary" onclick="predict()">Predict Survival</button>
+  </div>
+
+  <div class="col-12" id="result" style="display:none;"></div>
+
+</div>
+
+<script>
+  async function predict() {
+    const passenger = {
+      name: ["Passenger"],
+      pclass: [parseInt(document.getElementById("pclass").value)],
+      sex: [document.getElementById("sex").value],
+      age: [parseFloat(document.getElementById("age").value)],
+      sibsp: [parseInt(document.getElementById("sibsp").value)],
+      parch: [parseInt(document.getElementById("parch").value)],
+      fare: [parseFloat(document.getElementById("fare").value)],
+      embarked: [document.getElementById("embarked").value],
+      alone: [document.getElementById("alone").value === "true"]
+    };
+
+    const resultDiv = document.getElementById("result");
+    resultDiv.style.display = "block";
+    resultDiv.innerHTML = "Predicting...";
+
+    try {
+      const response = await fetch("http://localhost:8001/api/titanic/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(passenger)
+      });
+      const data = await response.json();
+      const survPct = (data.survive * 100).toFixed(1);
+      const diePct = (data.die * 100).toFixed(1);
+      resultDiv.innerHTML =
+        `<span class="text-success fw-bold">Survive: ${survPct}%</span> &nbsp;|&nbsp; <span class="text-danger fw-bold">Die: ${diePct}%</span>`;
+    } catch (err) {
+      resultDiv.innerHTML = `<span class="text-danger">Error: Could not reach API</span>`;
+    }
+  }
+</script>
