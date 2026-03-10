@@ -9,31 +9,13 @@ layout: base
     crossorigin="anonymous">
 
 <style>
-  /* Custom Styling for Light and Dark Themes */
-  body[data-bs-theme="dark"] .card {
-      background-color: #1e1e1e;
-      color: white;
-      border-color: #444;
+  /* Fix Bootstrap .page-link overriding minima's site-nav links */
+  .site-nav .page-link {
+    background-color: transparent !important;
+    border: none !important;
+    color: inherit !important;
+    padding: 0 !important;
   }
-  body[data-bs-theme="light"] .card {
-      background-color: white;
-      color: black;
-      border-color: #ddd;
-  }
-  body[data-bs-theme="dark"] .btn-primary {
-      background-color: #0d6efd;
-      border-color: #0d6efd;
-  }
-
-  /* Position and z-index for the theme toggle button */
-  #theme-toggle {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      z-index: 1000; /* Low z-index to avoid covering the menu */
-      border-radius: 50%;
-  }
-  
 </style>
 
 <!-- Bootstrap-styled content -->
@@ -50,33 +32,5 @@ layout: base
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
-  
-  <!-- Theme Toggle Button -->
-  <div class="d-flex justify-content-end p-3">
-    <button id="theme-toggle" class="btn btn-outline-secondary">🌙 Dark Mode</button>
-  </div>
   {{ content }}
 </div>
-
-<script>
-  // Theme Toggle Logic
-  const toggleButton = document.getElementById("theme-toggle");
-  const body = document.body;
-
-  function setTheme(theme) {
-      body.setAttribute("data-bs-theme", theme);
-      localStorage.setItem("theme", theme);
-      toggleButton.innerHTML = theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
-  }
-
-  // Load saved theme
-  const savedTheme = localStorage.getItem("theme") || "light";
-  setTheme(savedTheme);
-
-  // Toggle theme on button click
-  toggleButton.addEventListener("click", () => {
-      const newTheme = body.getAttribute("data-bs-theme") === "dark" ? "light" : "dark";
-      setTheme(newTheme);
-  });
-
-</script>
