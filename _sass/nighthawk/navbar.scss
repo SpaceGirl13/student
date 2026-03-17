@@ -47,3 +47,30 @@
 .site-header .wrapper {
     max-width: fit-content !important;
 }
+
+.site-nav .trigger {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    right: 0;
+    top: 60px;
+    width: 200px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.site-nav .nav-trigger:checked ~ label + .trigger,
+.site-nav .nav-trigger:checked + label + .trigger {
+    display: flex;
+}
+
+@media (min-width: 600px) {
+    .site-nav .trigger {
+        display: flex !important;
+        position: static;
+        flex-direction: row;
+        background: none;
+        box-shadow: none;
+        width: auto;
+    }
+}
