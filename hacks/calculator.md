@@ -8,7 +8,6 @@ permalink: /calculator
 ---
 
 <style>
-  /* Calculator display area */
   .calculator-output {
     grid-column: span 4;
     grid-row: span 1;
@@ -18,17 +17,16 @@ permalink: /calculator
     border: 5px solid black;
     display: flex;
     align-items: center;
-    justify-content: flex-end; /* Right-align numbers */
+    justify-content: flex-end;
   }
 
   canvas {
     filter: none;
   }
 
-  /* Calculator container grid */
   .calculator-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
     max-width: 400px;
     margin: 50px auto;
@@ -36,7 +34,6 @@ permalink: /calculator
     position: relative;
   }
 
-  /* Button styles */
   .calculator-number,
   .calculator-operation,
   .calculator-clear,
@@ -54,12 +51,10 @@ permalink: /calculator
     align-items: center;
   }
 
-  /* Specific operation colors */
   .calculator-operation { background: #4682b4; }
   .calculator-clear { background: orange; }
   .calculator-equals { background: red; }
 
-  /* Button hover effect */
   .calculator-number:hover,
   .calculator-operation:hover,
   .calculator-clear:hover,
@@ -67,79 +62,130 @@ permalink: /calculator
     opacity: 0.8;
   }
 
-  /* History panel styling */
+  .calculator-analyze {
+    grid-column: span 2;
+    background: #4682b4;
+    color: #fff;
+    font-size: 1.5rem;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .calculator-analyze:hover {
+    opacity: 0.8;
+  }
+
+  .calculator-clear-history {
+    grid-column: span 4;
+  }
+
+  .calculator-title {
+    text-align: center;
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin: 0;
+    padding-top: 30px;
+    position: relative;
+    z-index: 1;
+  }
+
   .history {
     max-width: 400px;
     margin: 20px auto;
-    padding: 10px;
-    border: 2px solid #000;
-    border-radius: 8px;
-    background: #f8f8f8;
-    color: #000;
+    padding: 14px 16px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background: #fff;
+    color: #222;
     text-align: left;
     font-size: 14px;
     overflow-y: auto;
     max-height: 200px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
 
   .history h3 {
     margin: 0 0 10px 0;
     text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #444;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 6px;
+  }
+
+  .history ul {
+    margin: 0;
+    padding: 0 0 0 18px;
+  }
+
+  .history li {
+    padding: 3px 0;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+  }
+
+  .history li:last-child {
+    border-bottom: none;
   }
 </style>
 
-<!-- Calculator UI -->
 <div id="animation">
+  <p class="calculator-title">Calculator with History</p>
   <div class="calculator-container">
-      <!-- Display output -->
       <div class="calculator-output" id="output">0</div>
 
-      <!-- Row 1 -->
       <div class="calculator-number">1</div>
       <div class="calculator-number">2</div>
       <div class="calculator-number">3</div>
       <div class="calculator-operation">+</div>
 
-      <!-- Row 2 -->
       <div class="calculator-number">4</div>
       <div class="calculator-number">5</div>
       <div class="calculator-number">6</div>
       <div class="calculator-operation">-</div>
 
-      <!-- Row 3 -->
       <div class="calculator-number">7</div>
       <div class="calculator-number">8</div>
       <div class="calculator-number">9</div>
       <div class="calculator-operation">*</div>
 
-      <!-- Row 4 -->
       <div class="calculator-clear">A/C</div>
       <div class="calculator-number">0</div>
       <div class="calculator-number">.</div>
       <div class="calculator-equals">=</div>
 
-      <!-- Row 5: Additional operations -->
       <div class="calculator-operation">/</div>
       <div class="calculator-operation">//</div>
       <div class="calculator-operation">^</div>
       <div class="calculator-operation">√</div>
+
+      <div class="calculator-analyze" onclick="analyzeHistory('average')">Average</div>
+      <div class="calculator-analyze" onclick="analyzeHistory('max')">Max</div>
+      <div class="calculator-clear calculator-clear-history" onclick="clearHistory()">Clear History</div>
   </div>
 </div>
 
-<!-- History Panel -->
 <div class="history" id="history">
   <h3>History</h3>
   <ul id="history-list"></ul>
 </div>
 
 <script>
-/* --- Calculator Variables --- */
-let firstNumber = null;       // Stores the first operand
-let operator = null;          // Stores the selected operator
-let nextReady = true;         // Determines if the next number starts fresh
-let justCalculated = false;   // Tracks if last action was "="
+let firstNumber = null;
+let operator = null;
+let nextReady = true;
+let justCalculated = false;
+let historyArray = [];
 
-/* --- DOM Elements --- */
 const output = document.getElementById("output");
 const numbers = document.querySelectorAll(".calculator-number");
 const operations = document.querySelectorAll(".calculator-operation");
@@ -147,65 +193,55 @@ const clear = document.querySelectorAll(".calculator-clear");
 const equals = document.querySelectorAll(".calculator-equals");
 const historyList = document.getElementById("history-list");
 
-/* --- Number Button Handling --- */
 numbers.forEach(button => {
   button.addEventListener("click", function() {
     inputNumber(button.textContent);
   });
 });
 
-/* Function to handle number input */
 function inputNumber(value) {
   if (nextReady || justCalculated) {
-    // Start fresh for a new number
     output.innerHTML = value;
     nextReady = false;
-
     if (justCalculated) {
-      // Reset state after a previous calculation
       firstNumber = null;
       operator = null;
       justCalculated = false;
     }
   } else {
-    // Append number to current display
     output.innerHTML += value;
   }
 }
 
-/* --- Operation Button Handling --- */
 operations.forEach(button => {
   button.addEventListener("click", function() {
     handleOperation(button.textContent);
   });
 });
 
-/* Function to handle operations */
 function handleOperation(choice) {
   if (choice === "√") {
-    // Single-number square root operation
     let val = parseFloat(output.innerHTML);
-    output.innerHTML = Math.sqrt(val).toString();
-    addHistory(`√${val} = ${output.innerHTML}`);
+    let sqrtResult = parseFloat(Math.sqrt(val).toFixed(10));
+    output.innerHTML = sqrtResult.toString();
+    let expr = `√${val} = ${sqrtResult}`;
+    addHistory(expr);
+    historyArray.push({ expression: expr, result: sqrtResult });
     nextReady = true;
     justCalculated = true;
     return;
   }
-
-  // For multi-number operations
   if (firstNumber === null) {
     firstNumber = parseFloat(output.innerHTML);
   } else if (!nextReady) {
     firstNumber = calculate(firstNumber, parseFloat(output.innerHTML));
     output.innerHTML = firstNumber.toString();
   }
-
   operator = choice;
   nextReady = true;
   justCalculated = false;
 }
 
-/* --- Calculator Logic --- */
 function calculate(first, second) {
   let result = 0;
   switch (operator) {
@@ -217,16 +253,13 @@ function calculate(first, second) {
     case "^": result = Math.pow(first, second); break;
     default: break;
   }
-  
-  // Round to 10 decimal places to fix floating-point issues
   result = parseFloat(result.toFixed(10));
-  
-  addHistory(`${first} ${operator} ${second} = ${result}`);
+  let expr = `${first} ${operator} ${second} = ${result}`;
+  addHistory(expr);
+  historyArray.push({ expression: expr, result: result });
   return result;
 }
 
-
-/* --- Equals Button Handling --- */
 equals.forEach(button => {
   button.addEventListener("click", function() {
     handleEquals();
@@ -243,53 +276,50 @@ function handleEquals() {
   }
 }
 
-/* --- Clear Button Handling --- */
 clear.forEach(button => {
   button.addEventListener("click", function() {
     clearCalc();
   });
 });
 
-/* Function to clear calculator and history */
 function clearCalc() {
   firstNumber = null;
   operator = null;
   nextReady = true;
   justCalculated = false;
   output.innerHTML = "0";
-  historyList.innerHTML = "";
 }
 
-/* --- History Tracking --- */
 function addHistory(entry) {
   let li = document.createElement("li");
   li.textContent = entry;
   historyList.appendChild(li);
 }
-</script>
 
-<!-- Vanta animations -->
-<script src="{{site.baseurl}}/assets/js/three.r119.min.js"></script>
-<script src="{{site.baseurl}}/assets/js/vanta.halo.min.js"></script>
-<script src="{{site.baseurl}}/assets/js/vanta.birds.min.js"></script>
-<script src="{{site.baseurl}}/assets/js/vanta.net.min.js"></script>
-<script src="{{site.baseurl}}/assets/js/vanta.rings.min.js"></script>
+function clearHistory() {
+  historyArray = [];
+  historyList.innerHTML = "";
+}
 
-<script>
-/* --- Initialize Random Vanta Background --- */
-var vantaInstances = { halo: VANTA.HALO, birds: VANTA.BIRDS, net: VANTA.NET, rings: VANTA.RINGS };
-var vantaInstance = vantaInstances[Object.keys(vantaInstances)[Math.floor(Math.random() * Object.keys(vantaInstances).length)]];
-vantaInstance({ el: "#animation", mouseControls: true, touchControls: true, gyroControls: false });
-</script>
-
-<!-- Footer with changes -->
-<footer>
-  <h3>Changes from the Original Calculator</h3>
-  <ul style="list-style-type: none; padding: 0;">
-    <li>✅ Hack 0: Right justified the calculator output.</li>
-    <li>✅ Hack 1: Fixed handling for small, big, and decimal numbers.</li>
-    <li>✅ Hack 2: Added missing math operations: <strong>division (/), integer division (//), and exponents (^)</strong>.</li>
-    <li>✅ Hack 3: Implemented single-number operation: <strong>square root (√)</strong>.</li>
-    <li>📝 Added a <strong>history panel</strong> to track past expressions and results.</li>
-  </ul>
-</footer>
+function analyzeHistory(stat) {
+  if (historyArray.length === 0) {
+    output.innerHTML = "No history";
+    return;
+  }
+  let value = 0;
+  if (stat === "average") {
+    let sum = 0;
+    for (let i = 0; i < historyArray.length; i++) {
+      sum += historyArray[i].result;
+    }
+    value = parseFloat((sum / historyArray.length).toFixed(10));
+  } else if (stat === "max") {
+    value = historyArray[0].result;
+    for (let i = 1; i < historyArray.length; i++) {
+      if (historyArray[i].result > value) {
+        value = historyArray[i].result;
+      }
+    }
+  }
+  output.innerHTML = value;
+}
