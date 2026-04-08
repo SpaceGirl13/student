@@ -11,13 +11,18 @@ permalink: /calculator
   .calculator-output {
     grid-column: span 4;
     grid-row: span 1;
-    border-radius: 10px;
-    padding: 0.25em;
-    font-size: 20px;
-    border: 5px solid black;
+    border-radius: 16px;
+    padding: 12px 20px;
+    font-size: 48px;
+    font-weight: 300;
+    border: none;
+    background: #1c1c1e;
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+    letter-spacing: -1px;
   }
 
   canvas {
@@ -27,62 +32,88 @@ permalink: /calculator
   .calculator-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    max-width: 400px;
-    margin: 50px auto;
+    gap: 12px;
+    max-width: 420px;
+    margin: 30px auto;
     z-index: 1;
     position: relative;
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
   }
 
   .calculator-number,
   .calculator-operation,
   .calculator-clear,
   .calculator-equals {
-    background: #2d7a78;
+    background: #2c2c2e;
     color: #fff;
-    font-size: 1.5rem;
-    padding: 20px;
-    border-radius: 10px;
+    font-size: 1.4rem;
+    font-weight: 500;
+    padding: 18px;
+    border-radius: 16px;
     text-align: center;
     cursor: pointer;
     user-select: none;
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: opacity 0.1s, transform 0.1s;
   }
 
-  .calculator-operation { background: #4682b4; }
-  .calculator-clear { background: orange; }
-  .calculator-equals { background: red; }
+  .calculator-operation {
+    background: #ff9500;
+    box-shadow: 0 0 10px rgba(255,149,0,0.3);
+  }
 
-  .calculator-number:hover,
+  .calculator-clear { background: #636366; }
+
+  .calculator-equals {
+    background: #34c759;
+    box-shadow: 0 0 10px rgba(52,199,89,0.3);
+  }
+
+  .calculator-number:hover {
+    opacity: 0.75;
+    box-shadow: 0 0 8px rgba(255,255,255,0.1);
+  }
+
   .calculator-operation:hover,
-  .calculator-clear:hover,
   .calculator-equals:hover {
+    opacity: 0.85;
+  }
+
+  .calculator-clear:hover {
     opacity: 0.8;
   }
 
   .calculator-analyze {
     grid-column: span 2;
-    background: #4682b4;
+    background: #ff9500;
     color: #fff;
-    font-size: 1.5rem;
-    padding: 20px;
-    border-radius: 10px;
+    font-size: 1.4rem;
+    font-weight: 500;
+    padding: 18px;
+    border-radius: 16px;
     text-align: center;
     cursor: pointer;
     user-select: none;
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: 0 0 10px rgba(255,149,0,0.3);
+    transition: opacity 0.1s;
   }
 
   .calculator-analyze:hover {
-    opacity: 0.8;
+    opacity: 0.85;
   }
 
   .calculator-clear-history {
     grid-column: span 4;
+    background: #636366 !important;
+    box-shadow: none !important;
   }
 
   .calculator-title {
@@ -106,7 +137,7 @@ permalink: /calculator
     background: #fff;
     color: #222;
     text-align: left;
-    font-size: 14px;
+    font-size: 18px;
     overflow-y: auto;
     max-height: 200px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
@@ -115,7 +146,7 @@ permalink: /calculator
   .history h3 {
     margin: 0 0 10px 0;
     text-align: center;
-    font-size: 1rem;
+    font-size: 1.4rem !important;
     font-weight: 600;
     color: #444;
     border-bottom: 1px solid #eee;
@@ -131,6 +162,7 @@ permalink: /calculator
     padding: 3px 0;
     border-bottom: 1px solid #f0f0f0;
     color: #333;
+    font-size: 1.1rem !important;
   }
 
   .history li:last-child {
